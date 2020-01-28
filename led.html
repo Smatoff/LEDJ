@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    	* { background: #000000; padding: 0; margin: 0; }
+    	canvas { background: #000000; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="480" height="320"></canvas>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+ctx.canvas.width  = window.innerWidth;
+ctx.canvas.height = window.innerHeight;
+var ballRadius = 10;
+var spacePressed = false;
+var rPressed = false;
+
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+function keyDownHandler(e) {
+    if(e.keyCode == 32) {
+        spacePressed = true;
+    }
+
+    if(e.keyCode == 82) {
+        rPressed = !rPressed;
+    }
+}
+
+function keyUpHandler(e) {
+    if(e.keyCode == 32) {
+        spacePressed = false;
+    }
+}
+
+
+var rowCount = 10;
+var columnCount = 10;
+var ledWidth = 5
+var ledHeight = 5;
+var ledPadding=20;
+var leftOffset = (canvas.width/(columnCount*2));
+var topOffset = (canvas.height/(rowCount*2))
+
+LEDs = []
+for (var c = 0; c < columnCount; c++) {
+    LEDs[c] = []
+    for (var r = 0; r < rowCount; r++) {
+        var LEDx = (canvas.width * (c/columnCount) + leftOffset);
+        var LEDy = (canvas.height *(r/rowCount) + topOffset);
+        LEDs[c][r] = { x: LEDx, y: LEDy, color: "#000000" }
+    }
+}
+
+function drawLEDs() {
+    for (var c = 0; c < columnCount; c++) {
+        for(var r = 0; r < rowCount; r++) {
+            currentLED = LEDs[c][r]
+            ctx.beginPath();
+            var LEDcolor = "white";
+            if(spacePressed) {
+                LEDcolor = "blue";
+            }
+            if(rPressed) {
+                LEDcolor = randomColor();
+            }
+            ctx.arc(currentLED.x, currentLED.y, ballRadius, 0, Math.PI*2);
+            ctx.fillStyle = LEDcolor;
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+}
+
+function randomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function draw() {
+    drawLEDs();
+}
+
+setInterval(draw, 10);
+</script>
+
+</body>
+</html>
